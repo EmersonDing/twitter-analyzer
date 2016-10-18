@@ -24,12 +24,12 @@ class MyStreamListener(tweepy.StreamListener):
     count = 0
 
     def on_status(self, status):
-	    self.count += 1
-		print self.count
-		collection.insert_one(status._json)
-		if self.count > 1000000:
-			myStream.disconnect()
-			print "Twitter stream has been disconnected successfully."
+    	self.count += 1
+    	print self.count
+    	collection.insert_one(status._json)
+        if self.count > 1000000:
+        	myStream.disconnect()
+        	print "Twitter stream has been disconnected successfully."
 
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth = api.auth, listener=MyStreamListener())
