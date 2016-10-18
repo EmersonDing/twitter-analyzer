@@ -1,4 +1,4 @@
-mport tweepy
+import tweepy
 from pymongo import MongoClient
 import datetime
 
@@ -21,20 +21,20 @@ f = open("test.txt", "wb")
 
 class MyStreamListener(tweepy.StreamListener):
 
-    count = 0;
+    count = 0
 
-        def on_status(self, status):
-	    	self.count += 1
-		    	print self.count
-			    	collection.insert_one(status._json)
-				        if self.count > 1000000:
-					        	myStream.disconnect()
-							        	print "Twitter stream has been disconnected successfully."
+    def on_status(self, status):
+	    self.count += 1
+		print self.count
+		collection.insert_one(status._json)
+		if self.count > 1000000:
+			myStream.disconnect()
+			print "Twitter stream has been disconnected successfully."
 
-									myStreamListener = MyStreamListener()
-									myStream = tweepy.Stream(auth = api.auth, listener=MyStreamListener())
+myStreamListener = MyStreamListener()
+myStream = tweepy.Stream(auth = api.auth, listener=MyStreamListener())
 
-									myStream.filter(track=['Trump'])
+myStream.filter(track=['Trump'])
 
-									print collection.find_one()
-									print collection.count()
+print collection.find_one()
+print collection.count()
