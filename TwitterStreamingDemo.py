@@ -30,38 +30,16 @@ class MyStreamListener(tweepy.StreamListener):
     	self.count += 1
     	print self.count
     	collection.insert_one(status._json)
-        if self.count > 1000000:
+        if self.count > 10000:
         	myStream.disconnect()
         	print "Twitter stream has been disconnected successfully."
 
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth = api.auth, listener=MyStreamListener())
 
-# myStream.filter(track=['Trump'])
+myStream.filter(track=['Trump'])
 
-# print collection.find_one()
-# print collection.count()
+print collection.find_one()
+print collection.count()
 
-dataset = [{"created_at": item["created_at"],
-            "text": item["text"],
-            "user": "@%s" % item["user"]["screen_name"],
-            "source": item["source"],
-           } for item in collection.find()]
 
-dataset = pd.DataFrame(dataset)
-
-# print dataset
-
-def get_source_name(x):
-    value = re.findall(pattern="<[^>]+>([^<]+)</a>", string=x)
-    if len(value) > 0:
-        return value[0]
-    else:
-        return ""
-
-dataset.source_name = dataset.source.apply(get_source_name)
-
-source_counts = dataset.source_name.value_counts().sort_values()[-10:]
-
-print dataset.source_name
-print source_counts
