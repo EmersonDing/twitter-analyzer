@@ -1,4 +1,5 @@
-<button onclick="get_data()">Create Chart</button>
+<button onclick="get_data_device()">Device</button>
+<button onclick="get_data_lang()">Language</button>
 <div id="chart" style="height:500px; width:100%""></div>
 
 {{include 'web2py_ajax.html'}}
@@ -6,108 +7,23 @@
 <script src="{{=URL('static','js/export.min.js')}}"></script>
 <script src="{{=URL('static','js/light.js')}}"></script>
 <script src="{{=URL('static','js/serial.js')}}"></script>
+<script src="{{=URL('static','js/pie.js')}}"></script>
 <script>
-//    var chart = AmCharts.makeChart( "chart", {
-//      "type": "serial",
-//      "theme": "light",
-//      "dataProvider": [ {
-//        "country": "USA",
-//        "visits": 2025
-//      }, {
-//        "country": "China",
-//        "visits": 1882
-//      }, {
-//        "country": "Japan",
-//        "visits": 1809
-//      }, {
-//        "country": "Germany",
-//        "visits": 1322
-//      }, {
-//        "country": "UK",
-//        "visits": 1122
-//      }, {
-//        "country": "France",
-//        "visits": 1114
-//      }, {
-//        "country": "India",
-//        "visits": 984
-//      }, {
-//        "country": "Spain",
-//        "visits": 711
-//      }, {
-//        "country": "Netherlands",
-//        "visits": 665
-//      }, {
-//        "country": "Russia",
-//        "visits": 580
-//      }, {
-//        "country": "South Korea",
-//        "visits": 443
-//      }, {
-//        "country": "Canada",
-//        "visits": 441
-//      }, {
-//        "country": "Brazil",
-//        "visits": 395
-//      } ],
-//      "valueAxes": [ {
-//        "gridColor": "#FFFFFF",
-//        "gridAlpha": 0.2,
-//        "dashLength": 0
-//      } ],
-//      "gridAboveGraphs": true,
-//      "startDuration": 1,
-//      "graphs": [ {
-//        "balloonText": "[[category]]: <b>[[value]]</b>",
-//        "fillAlphas": 0.8,
-//        "lineAlpha": 0.2,
-//        "type": "column",
-//        "valueField": "visits"
-//      } ],
-//      "chartCursor": {
-//        "categoryBalloonEnabled": false,
-//        "cursorAlpha": 0,
-//        "zoomable": false
-//      },
-//      "categoryField": "country",
-//      "categoryAxis": {
-//        "gridPosition": "start",
-//        "gridAlpha": 0,
-//        "tickPosition": "start",
-//        "tickLength": 20
-//      },
-//      "export": {
-//        "enabled": false
-//      }
-//
-//    } );
 
-
-    function get_data() {
+    function get_data_device() {
         $.ajax({
-            'url': 'get_chart_data',
+            'url': 'get_chart_device',
             'type': 'post',
             'dataType': 'json',
             'success': function(data) {
                 console.log(data);
-                var parameters = [{
-                                "country": "USA",
-                                "visits": 2025
-                              }, {
-                                "country": "China",
-                                "visits": 1882
-                              }, {
-                                "country": "Japan",
-                                "visits": 1809
-                              }];
-                console.log(parameters);
-                create_chart(data);
+                create_chart_device(data);
             }
         });
     }
 
 
-    function create_chart(data) {
+    function create_chart_device(data) {
         var chart = AmCharts.makeChart( "chart", {
           "type": "serial",
           "theme": "light",
@@ -144,6 +60,35 @@
 
         } );
     }
+
+
+    function get_data_lang() {
+        $.ajax({
+            'url': 'get_chart_lang',
+            'type': 'post',
+            'dataType': 'json',
+            'success': function(data) {
+                create_chart_lang(data);
+            }
+        });
+    }
+
+    function create_chart_lang(data) {
+        var chart = AmCharts.makeChart( "chart", {
+            "type": "pie",
+            "theme": "light",
+            "dataProvider": data,
+            "valueField": "tweets",
+            "titleField": "Language",
+            "balloon":{
+            "fixedPosition":true
+            },
+            "export": {
+            "enabled": false
+            }
+        } );
+    }
+
 </script>
 
 
