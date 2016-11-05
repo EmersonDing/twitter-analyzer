@@ -25,9 +25,16 @@ if __name__ == "__main__":
     # create db object
     db = Database()
 
+    # test count
+    count = 0
+
     # read from twitter and write into mongo
     for status in tweepy.Cursor(api.home_timeline).items():
         process_or_store(status._json)
         db.insertRow(status._json)
-        time.sleep(3)
+        count += 1
+        if(count == 250):
+            count = 0
+            print("Waiting....")
+            time.sleep(15*60)
 

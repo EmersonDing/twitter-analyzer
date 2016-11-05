@@ -6,9 +6,12 @@ from pymongo import MongoClient
 
 class Database:
     def __init__(self):
-        self.client = MongoClient()
-        self.db = self.client.twitter
-        self.collection = self.db.twitter_stream
+        try:
+            self.client = MongoClient()
+            self.db = self.client.twitter
+            self.collection = self.db.twitter_stream
+        except Exception:
+            print(Exception)
 
     def getRow(self):
         for line in self.collection.find():
@@ -20,6 +23,6 @@ class Database:
 
 if __name__ == "__main__":
     db = Database()
-    # db.insertRow({'text':'test'})
+    #db.insertRow({'text':'test'})
     db.getRow()
 
