@@ -7,17 +7,18 @@
 # - user is required for authentication and authorization
 # - download is for downloading files uploaded in the db (does streaming)
 # -------------------------------------------------------------------------
-import tweepy
-import numpy as np
-import pandas as pd
-from pymongo import MongoClient
 import re
-import datetime
-import json
 
+import pandas as pd
+import tweepy
+from pymongo import MongoClient
+
+import nltk
+from nltk.corpus import treebank
 
 collection = MongoClient('localhost', 27017)["tweets"]["StreamingDemo"]
 
+# collection = None
 consumer_key = "8pCg0f2Ih81PSpbH5XQNptWPQ"
 consumer_secret = "ghSdXGQKYABWdCn44TNizjvBt05l2mqeQtveBrBCkbVFGtB1iB"
 
@@ -29,6 +30,7 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
+myStream = None
 
 
 def get_api():
@@ -46,53 +48,60 @@ def get_api():
     return api
 
 
-def get_collection():
-    collection = MongoClient('localhost', 27017)["tweets"]["StreamingDemo"]
-    return collection
-
-
 class MyStreamListener(tweepy.StreamListener):
-
-    count = 0
+    global collection
+    global myStream
+    count = 1
+    goal = 1000 - collection.count()
 
     def on_status(self, status):
         self.count += 1
-        print self.count
         collection.insert_one(status._json)
         if self.count > 1000:
             myStream.disconnect()
             print "Twitter stream has been disconnected successfully."
 
-# myStreamListener = MyStreamListener()
-# myStream = tweepy.Stream(auth=api.auth, listener=MyStreamListener())
-#
-# myStream.filter(track=['Trump'])
+
+class Keyword:
+    def __init__(self):
+        self.stopWordList = set()          # stop word list
+        f = open('D:\Workspaces\Tweet-Streaming-Data-Analysis-Service\web2py\StopWord.txt', 'r')
+        for line in f:
+            line = line[:-1]            # remove '\n'
+            self.stopWordList.add(line)
+
+    def getKeyword(self, sentence):
+        words = []
+        tokens = nltk.word_tokenize(sentence)
+        tagged = nltk.pos_tag(tokens)
+
+        # extract noun and noun phrase
+        word = ""
+        index = 0
+        check = 0
+        while(index < len(tagged)):
+            if "NN" in tagged[index][1]:
+                word += tagged[index][0].lower()
+                check = index
+                while index+1 < len(tagged) and "NN" in tagged[index+1][1]:
+                    word += " " + tagged[index+1][0].lower()
+                    index += 1
+                words.append(word)
+            index += 1
+            word = ""
+
+        return words
+
+
+def update_collection(search_word):
+    global myStream
+
+    myStream = tweepy.Stream(auth=api.auth, listener=MyStreamListener())
+    myStream.filter(track=[search_word])
 
 
 def index():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
-
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
-    collection = get_collection()
-    dataset = [{"created_at": item["created_at"],
-                "text": item["text"],
-                "user": "@%s" % item["user"]["screen_name"],
-                "source": item["source"],
-                "lang": item["lang"],
-                } for item in collection.find()]
-
-    dataset = pd.DataFrame(dataset)
-    dataset.source_name = dataset.source.apply(get_source_name)
-    source_counts = dataset.source_name.value_counts().sort_values()[-10:]
-    lang_counts = dataset.lang.value_counts().sort_values()
-    source_info = {}
-    for s in source_counts.iteritems():
-        source_info[s[0]] = s[1]
-    return dict(source_info=source_info)
+    return dict()
 
 
 def get_source_name(x):
@@ -103,78 +112,124 @@ def get_source_name(x):
         return ""
 
 
-def get_chart_device():
-    print "get_chart_data"
-    collection = get_collection()
-    dataset = [{"created_at": item["created_at"],
-                "text": item["text"],
-                "user": "@%s" % item["user"]["screen_name"],
-                "source": item["source"],
-                "lang": item["lang"],
-                "filter_level": item["filter_level"],
+def process_device_analysis():
+    global collection
+
+    dataset = [{"source": item["source"]
                 } for item in collection.find()]
 
     dataset = pd.DataFrame(dataset)
-    dataset.source_name = dataset.source.apply(get_source_name)
-    source_counts = dataset.source_name.value_counts().sort_values()[-10:]
-    lang_counts = dataset.lang.value_counts().sort_values()[-5:]
-    filter_level_counts = dataset.filter_level.value_counts().sort_values()
-    print "------------ The language distribution is : ------------------"
-    print lang_counts
-    print "---------- End of the language distribution is : -------------"
-    print "------------ The filter_level distribution is : ------------------"
-    print filter_level_counts
-    print "---------- End of the filter_level distribution is : -------------"
+    dataset.device_name = dataset.source.apply(get_source_name)
+    result = dataset.device_name.value_counts().sort_values()[-10:]
+
     data = []
-    for s in source_counts.iteritems():
+    for s in result.iteritems():
         data.insert(0, {
-            "Device": s[0],
+            "Type": s[0],
             "tweets": s[1].item()
         })
-        print type(s[1].item())
-    print data
-    json_data = response.json(data)
-    print json_data
-    return response.json(data)
-    # json_data = json.dumps(data)
-    # print json_data
-    # return json.dumps(data)
+
+    return data
 
 
-def get_chart_lang():
-    print "get_chart_data"
-    collection = get_collection()
-    dataset = [{"created_at": item["created_at"],
-                "text": item["text"],
-                "user": "@%s" % item["user"]["screen_name"],
-                "source": item["source"],
-                "lang": item["lang"],
-                "filter_level": item["filter_level"],
+def process_language_analysis():
+    global collection
+
+    dataset = [{"lang": item["lang"]
                 } for item in collection.find()]
 
     dataset = pd.DataFrame(dataset)
-    lang_counts = dataset.lang.value_counts().sort_values()[-5:]
-    filter_level_counts = dataset.filter_level.value_counts().sort_values()
-    print "------------ The language distribution is : ------------------"
-    print lang_counts
-    print "---------- End of the language distribution is : -------------"
-    print "------------ The filter_level distribution is : ------------------"
-    print filter_level_counts
-    print "---------- End of the filter_level distribution is : -------------"
+    result = dataset.lang.value_counts().sort_values()[-5:]
+
     data = []
-    for s in lang_counts.iteritems():
+    for s in result.iteritems():
         data.insert(0, {
-            "Language": s[0],
+            "Type": s[0],
             "tweets": s[1].item()
         })
-        print type(s[1].item())
-    print data
-    json_data = response.json(data)
-    print json_data
+
+    return data
+
+
+def process_hashtag_analysis():
+    global collection
+
+    top_k_hashtag = {}
+    for item in collection.find():
+        try:
+            hashtags = item['entities']['hashtags']
+            for hashtag in hashtags:
+                text = hashtag['text'].lower()
+                if text not in top_k_hashtag:
+                    top_k_hashtag[text] = 1
+                else:
+                    temp = top_k_hashtag[text]
+                    temp = temp + 1
+                    top_k_hashtag[text] = temp
+        except Exception as e:
+            pass
+
+    data = []
+    top_sorted = sorted(top_k_hashtag.iteritems(), key=lambda x: x[1], reverse=False)
+    for item in top_sorted[-10:]:
+        data.insert(0, {
+            "Type": str(item[0]),
+            "tweets": item[1]
+        })
+
+    return data
+
+
+def process_keyword_analysis():
+    global collection
+
+    key_word = Keyword()
+    word_frequency = {}
+
+    for item in collection.find():
+        parsed_word = Keyword.getKeyword(key_word, item['text'])
+        for unicode_word in parsed_word:
+            try:
+                word = str(unicode_word)
+            except (UnicodeEncodeError):
+                pass
+            if word_frequency.has_key(word):
+                word_frequency[word] += 1
+            else:
+                word_frequency[word] = 1
+
+    data = []
+    top_sorted = sorted(word_frequency.iteritems(), key=lambda x: x[1], reverse=False)
+    for item in top_sorted[-10:]:
+        data.insert(0, {
+            "Type": str(item[0]),
+            "tweets": item[1]
+        })
+
+    return data
+
+
+def get_chart_data():
+    global collection
+
+    search_word = request.vars.search_text
+    analysis_type = request.vars.type_of_analysis
+
+    collection = MongoClient('localhost', 27017)["tweets"][search_word]
+    if collection.count() < 1000:
+        update_collection(search_word)
+
+    data = []
+    if analysis_type == 'Device':
+        data = process_device_analysis()
+    elif analysis_type == 'Language':
+        data = process_language_analysis()
+    elif analysis_type == 'Hashtag':
+        data = process_hashtag_analysis()
+    elif analysis_type == 'Keyword':
+        data = process_keyword_analysis()
+
     return response.json(data)
-    # json_data = json.dumps(data)
-    # print json_data
-    # return json.dumps(data)
 
 
 def user():
