@@ -1,0 +1,71 @@
+<script src="{{=URL('static','js/jquery.js')}}"></script>
+<script src="{{=URL('static','js/bootstrap.min.js')}}"></script>
+<link rel="stylesheet" href="{{=URL('static','css/bootstrap.min.css')}}"/>
+<link rel="stylesheet" href="{{=URL('static','css/web2py-bootstrap3.css')}}"/>
+<script src="{{=URL('static','js/amcharts.js')}}"></script>
+<script src="{{=URL('static','js/export.min.js')}}"></script>
+<script src="{{=URL('static','js/light.js')}}"></script>
+<script src="{{=URL('static','js/serial.js')}}"></script>
+<script src="{{=URL('static','js/pie.js')}}"></script>
+<script src="{{=URL('static', 'js/load_charts.js')}}"></script>
+
+<div class="form-group">
+<label>Search by Name</label>
+<input id="search" type="text" class="col-sm-3 form-control" id="exampleInputEmail1" placeholder="Search by name.">
+</div>
+<div class="form-group">
+<label>Type of analysis</label>
+<select class="form-control" id="type_of_analysis">
+  <option>Device</option>
+  <option>Keyword</option>
+  <option>Hashtag</option>
+  <option>Language</option>
+</select>
+</div>
+<div>
+<label>Type of chart</label>
+<select class="form-control" id="type_of_chart">
+  <option>Column Chart</option>
+  <option>Pie Chart</option>
+  <option>Line Chart</option>
+</select>
+</div>
+<button class="btn btn-primary" onclick="get_chart()">
+    Get Chart
+</button>
+
+<div id="chart" style="height:500px; width:100%"></div>
+
+<script>
+    function get_chart() {
+        var search_text = $("#search").val();
+        var type_of_analysis = $("#type_of_analysis").val();
+        var type_of_chart = $("#type_of_chart").val();
+
+
+        $.ajax({
+            'url': 'get_chart_data',
+            'type': 'post',
+            'data': {
+                'search_text': search_text,
+                'type_of_analysis': type_of_analysis
+            },
+            'dataType': 'json',
+            'success': function(data) {
+                console.log(data);
+                if (type_of_chart == 'Column Chart') {
+                    create_chart_device(data);
+                } else if (type_of_chart == 'Pie Chart') {
+                    create_chart_lang(data);
+                }
+            }
+        })
+    }
+</script>
+
+
+
+
+
+
+
