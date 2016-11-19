@@ -90,5 +90,7 @@ ENV/
 .ropeproject
 
 .idea/workspace.xml
+.idea/misc.xml
+.idea/*.iml
 web2py/httpserver.pid
 web2py/parameters_8000.py
