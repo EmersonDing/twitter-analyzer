@@ -42,6 +42,6 @@ class Keyword:
         return words
 
 if __name__ == "__main__":
-    sentence = "Prof Lindon is giving a wonderful speech of machine learning now!"
+    sentence = "Donald Trump is going to win the election!"
     kw = Keyword()
     print(kw.getKeyword(sentence))
