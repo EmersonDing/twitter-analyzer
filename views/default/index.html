@@ -1,0 +1,137 @@
+<script src="{{=URL('static','js/jquery.js')}}"></script>
+<script src="{{=URL('static','js/bootstrap.min.js')}}"></script>
+<link rel="stylesheet" href="{{=URL('static','css/bootstrap.min.css')}}"/>
+<link rel="stylesheet" href="{{=URL('static','css/web2py-bootstrap3.css')}}"/>
+        <link rel="stylesheet" href="{{=URL('static','css/myapp.css')}}"/>
+<script src="{{=URL('static','js/amcharts.js')}}"></script>
+<script src="{{=URL('static','js/export.min.js')}}"></script>
+<script src="{{=URL('static','js/light.js')}}"></script>
+<script src="{{=URL('static','js/serial.js')}}"></script>
+<script src="{{=URL('static','js/pie.js')}}"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<script src="{{=URL('static', 'js/load_charts.js')}}"></script>
+<script>
+    var get_chart_data_url = "{{=URL('api', 'get_chart_data')}}";
+    var get_realtime_update_url = "{{=URL('api', 'get_realtime_update')}}";
+    var get_canvas_data_url = "{{=URL('api', 'get_canvas_data')}}";
+
+</script>
+
+<body style="padding-top: 0px;">
+
+<ul>
+    <li>
+        <a id="streaming_tweets" style="background-color: darkblue;">Streaming Tweets</a>
+    </li>
+    <li>
+        <a id="keyword_network" style="background-color: lightslategrey;">Keyword Network</a>
+    </li>
+</ul>
+</br>
+<div id="streaming_tweets_div" style="display: block;">
+    <div class="col-md-2">
+        <div class="form-group" style="width: 200px;">
+            <label>Search by Name</label>
+            <input id="search" type="text" class="col-sm-3 form-control" id="exampleInputEmail1" placeholder="Search by name.">
+            <br>
+        </div>
+        <br>
+        <div class="form-group" style="width: 200px;">
+            <label>Type of analysis</label>
+            <select class="form-control" id="type_of_analysis">
+              <option>Device</option>
+              <option>Hashtag</option>
+            </select>
+        </div>
+        <div class="form-group" style="width: 200px;">
+            <label>Number of tweet</label>
+            <select class="form-control" id="number_of_tweet">
+              <option>100</option>
+              <option>200</option>
+              <option>500</option>
+              <option>1000</option>
+            </select>
+        </div>
+        <div class="form-group" style="width: 200px;">
+            <label>Number of column</label>
+            <select class="form-control" id="number_of_item">
+              <option>3</option>
+              <option>5</option>
+              <option>8</option>
+              <option>10</option>
+            </select>
+        </div>
+        </br>
+        <button class="btn btn-primary" onclick="get_chart()">
+            Get Chart
+        </button>
+        </br>
+        <button id="btn_waiting" class="btn btn-danger" style="display: none">
+            Loading ....
+        </button>
+        </br>
+        <button id="btn_completed" class="btn btn-success" style="display: none;">
+            Completed
+        </button>
+    </div>
+
+    <div class="col-md-10">
+        <div id="chart" style="height:500px; width:100%"></div>
+    </div>
+</div>
+<!-- Search Bar -->
+<div id="keyword_search_div" style="display: none;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Keyword search field</h2>
+                <div id="custom-search-input">
+                    <div class="input-group col-md-12">
+                        <input id="keyword_search_input" type="text" class="form-control input-lg" placeholder="Search your keyword. e.g. Trump" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-info btn-lg" type="button" onclick="search_keyword(this);">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="keyword_network_div" style="display: none;">
+    <div id="return_btn" class="col-md-1">
+        <button onclick="return_to_search()" class="btn btn-primary">
+            <i class="fa fa-mail-reply"></i>&nbsp;Return
+        </button>
+    </div>
+    <div id="d3_chart" class="col-md-11"></div>
+    <div id="tweets" style="display: none;">
+        <button onclick="return_to_chart()">
+            return
+        </button>
+        <h1>sfsdffdfdf</h1>
+        <h1>sfsdffdfdf</h1>
+        <h1>sfsdffdfdf</h1>
+        <h1>sfsdffdfdf</h1>
+    </div>
+</div>
+</body>
+<script src="{{=URL('static','js/my-amcharts.js')}}"></script>
+<script src="{{=URL('static','js/my-d3.js')}}"></script>
+<script>
+
+</script>
+<script>
+
+</script>
+<script>
+
+</script>
+
+
+
+
+
+
