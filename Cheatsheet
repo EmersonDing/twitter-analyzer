@@ -1,4 +1,0 @@
-Start mongodb service:
-"D:\DevTools\MongoDB\Server\3.2\bin\mongod.exe" --dbpath "D:\Workspaces\Database\Mongodb"
-
-
