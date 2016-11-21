@@ -2,12 +2,13 @@
 This file test the tweepy library
 """
 
-import tweepy
 import json
 import time
+
+import tweepy
 from tweepy import OAuthHandler
-from tweepy import streaming
-from ConnectMongoDB import *
+
+from create_word_graph.ConnectMongoDB import *
 
 """
 define twitter api key

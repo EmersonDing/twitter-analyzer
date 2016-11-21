@@ -35,10 +35,10 @@ class Keyword:
                 while index+1 < len(tagged) and "NN" in tagged[index+1][1]:
                     word += " " + tagged[index+1][0].lower()
                     index += 1
-                words.append(word)
+                if "\\" not in word and "/" not in word and "rt" not in word and "@" not in word and "http" not in word:
+                    words.append(word.lower())
             index += 1
             word = ""
-
         return words
 
 if __name__ == "__main__":
