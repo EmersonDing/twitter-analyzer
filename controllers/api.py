@@ -45,7 +45,7 @@ def get_source_name(x):
 
 
 def process_tweets(analysis_type, status):
-    print 'start process'
+    # print 'start process'
     if analysis_type == 'Device':
         name = get_source_name(status._json["source"])
         if name is not None:
@@ -87,7 +87,17 @@ def get_streaming_tweets(search_word):
     global myStream
     print 'the search word is : ' + search_word
     myStream = tweepy.Stream(auth=api.auth, listener=MyStreamListener())
+    print myStream
     myStream.filter(track=[search_word])
+
+
+"""
+Todo myStream is currently recognized as None.
+"""
+def cancel_chart_data():
+    print 'the type of stream is :'
+    print myStream
+    # myStream.disconnect()
 
 
 def get_chart_data():
@@ -172,9 +182,21 @@ def get_realtime_update():
 
 
 def get_canvas_data():
+    keyword = request.vars.keyword
+    number_limit = request.vars.number_of_bubble
+    freq_limit = request.vars.frequency_of_bubble
+    print keyword
+    print number_limit
+    print freq_limit
     data = [
         {"Type": "Clinton", "Amount": 16362},
         {"Type": "MakeAmericaGreatAgain", "Amount": 997},
         {"Type": "Election", "Amount": 311}
     ]
     return response.json(data)
+
+
+def get_tweets_info():
+    keyword = request.vars.keyword
+    print 'The keyword is : ' + keyword
+    return response.json('sfssdfsdf')

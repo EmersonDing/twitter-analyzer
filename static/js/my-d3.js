@@ -9,16 +9,19 @@ $("#keyword_network").on("click", function(){
     document.getElementById("keyword_search_div").style.display = "block";
 });
 
-function search_keyword(obj) {
+function search_keyword() {
     var search_keyword = $("#keyword_search_input").val();
     document.getElementById("keyword_network_div").style.display = "block";
     document.getElementById("keyword_search_div").style.display = "none";
+    document.getElementById("return_to_search_btn").style.display = "block";
 
     $.ajax({
         'url': get_canvas_data_url,
         'type': 'post',
         'data': {
-
+            'keyword': $("#keyword_search_network").val(),
+            'number_of_bubble': $("#number_of_bubble").val() == 'No limit' ? 0 : $("#number_of_bubble").val(),
+            'frequency_of_bubble': $("#frequency_of_bubble").val() == 'No limit' ? 0 : $("#frequency_of_bubble").val()
         },
         'dataType': 'json',
         'success': function(data) {
@@ -47,7 +50,7 @@ function search_keyword(obj) {
                     var keyword = d.Type;
                     console.log('The key word is : ' + keyword);
                     $.ajax({
-                        'url': 'keyword_info',
+                        'url': get_tweets_info_url,
                         'type': 'post',
                         'data': {
                             'keyword': keyword
@@ -56,7 +59,8 @@ function search_keyword(obj) {
                         'success': function(data) {
                             console.log(data);
                             document.getElementById("tweets").style.display = "block";
-                            document.getElementById("chart").style.display = "none";
+                            document.getElementById("d3_chart").style.display = "none";
+                            document.getElementById("return_to_search_btn").style.display = "none";
                         }
                     });
                 });
@@ -81,9 +85,11 @@ function return_to_search() {
     document.getElementById("keyword_search_div").style.display = "block";
 }
 
-function return_to_chart() {
+function return_to_canvas() {
     document.getElementById("tweets").style.display = "none";
-    document.getElementById("chart").style.display = "block";
+    document.getElementById("return_to_canvas_btn").style.display = "none";
+    document.getElementById("d3_chart").style.display = "block";
+    document.getElementById("return_to_search_btn").style.display = "block";
 }
 
 var diameter = 600, //max size of the bubbles

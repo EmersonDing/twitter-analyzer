@@ -15,7 +15,8 @@
     var get_chart_data_url = "{{=URL('api', 'get_chart_data')}}";
     var get_realtime_update_url = "{{=URL('api', 'get_realtime_update')}}";
     var get_canvas_data_url = "{{=URL('api', 'get_canvas_data')}}";
-
+    var cancel_chart_data_url = "{{=URL('api', 'cancel_chart_data')}}";
+    var get_tweets_info_url = "{{=URL('api', 'get_tweets_info')}}";
 </script>
 
 <body style="padding-top: 0px;">
@@ -25,7 +26,7 @@
         <a id="streaming_tweets" style="background-color: darkblue;">Streaming Tweets</a>
     </li>
     <li>
-        <a id="keyword_network" style="background-color: lightslategrey;">Keyword Network</a>
+        <a id="keyword_network" style="background-color: lightslategrey;">Keyword Graph</a>
     </li>
 </ul>
 </br>
@@ -67,8 +68,8 @@
             Get Chart
         </button>
         </br>
-        <button id="btn_waiting" class="btn btn-danger" style="display: none">
-            Loading ....
+        <button id="btn_waiting" class="btn btn-danger" onclick="cancel_chart()" style="display: none">
+            Cancel
         </button>
         </br>
         <button id="btn_completed" class="btn btn-success" style="display: none;">
@@ -82,39 +83,58 @@
 </div>
 <!-- Search Bar -->
 <div id="keyword_search_div" style="display: none;">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <h2>Keyword search field</h2>
-                <div id="custom-search-input">
-                    <div class="input-group col-md-12">
-                        <input id="keyword_search_input" type="text" class="form-control input-lg" placeholder="Search your keyword. e.g. Trump" />
-                        <span class="input-group-btn">
-                            <button class="btn btn-info btn-lg" type="button" onclick="search_keyword(this);">
-                                <i class="glyphicon glyphicon-search"></i>
-                            </button>
-                        </span>
-                    </div>
-                </div>
-            </div>
+    <div class="search-middle">
+        <div class="form-group" style="width: 300px;">
+            <label>Key Word</label>
+            <input id="keyword_search_network" type="text" class="col-sm-3 form-control" id="exampleInputEmail1" placeholder="Search by name.">
+            <br>
         </div>
+        <br>
+        <div class="form-group" style="width: 300px;">
+            <label>Number of bubble</label>
+            <select class="form-control" id="number_of_bubble">
+              <option>No limit</option>
+              <option>20</option>
+              <option>30</option>
+              <option>50</option>
+            </select>
+        </div>
+        <div class="form-group" style="width: 300px;">
+            <label>Number of bubble</label>
+            <select class="form-control" id="frequency_of_bubble">
+              <option>No limit</option>
+              <option>5</option>
+              <option>10</option>
+              <option>20</option>
+            </select>
+        </div>
+        </br>
+        <button class="btn btn-primary" onclick="search_keyword()">
+            Search
+        </button>
     </div>
 </div>
+</div>
 <div id="keyword_network_div" style="display: none;">
-    <div id="return_btn" class="col-md-1">
+    <div id="return_to_search_btn" class="col-md-1">
         <button onclick="return_to_search()" class="btn btn-primary">
             <i class="fa fa-mail-reply"></i>&nbsp;Return
         </button>
     </div>
     <div id="d3_chart" class="col-md-11"></div>
     <div id="tweets" style="display: none;">
-        <button onclick="return_to_chart()">
-            return
-        </button>
-        <h1>sfsdffdfdf</h1>
-        <h1>sfsdffdfdf</h1>
-        <h1>sfsdffdfdf</h1>
-        <h1>sfsdffdfdf</h1>
+        <div class="col-md-1">
+            <button id="return_to_canvas_btn" onclick="return_to_canvas()" class="btn btn-primary">
+                Return
+            </button>
+        </div>
+        <div class="col-md-11">
+            <h1>sfsdffdfdf</h1>
+            <h1>sfsdffdfdf</h1>
+            <h1>sfsdffdfdf</h1>
+            <h1>sfsdffdfdf</h1>
+        </div>
+
     </div>
 </div>
 </body>

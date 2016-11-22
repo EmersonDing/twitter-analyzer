@@ -14,6 +14,12 @@ var chart = null;
 var is_completed = false;
 var timer_id = 0;
 
+function cancel_chart() {
+    console.log('cancel-chart');
+    $.post(cancel_chart_data_url);
+}
+
+
 function get_chart() {
     document.getElementById("btn_waiting").style.display = "block";
     document.getElementById("btn_completed").style.display = "none";
