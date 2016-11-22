@@ -1,26 +1,32 @@
-import time
+"""
+create keyword graph based on twitters
+"""
 
+import time
 from create_word_graph.ConnectMongoDB import *
 from create_word_graph.KeywordExtraction import *
 import sys
 
 chunkSize = 10000       # number of rows of twitter read from database each time
-dictSize = 20000        # maminum size of dict that saves keyword
+dictSize = 20000        # maxinum size of dict that saves keyword
 
 class CreateGraph:
     def __init__(self):
-        self.keywordExtration = Keyword()
-        self.db = Database()
-        self.dict = {}
-        self.data = []
+        self.keywordExtration = Keyword()   # keyword_extraction object
+        self.db = Database()                # database object
+        self.dict = {}                      # dictionary to save temperory graph before inserting graph directly into mongodb
+        self.data = []                      # twitter data
 
+    # insert graph in dict into database
     def insertDictIntoGraph(self):
         for i in self.dict:
             for j in self.dict[i]:
                 self.db.insertKeywordGraph(i, j, self.dict[i][j])
         self.dict.clear()      # clear dict
 
-    def getDataFromDatabase(self):
+    # main function to create graph. read twitter from mongodb, and do keyword extraction
+    # then update dict. insert dict into mongodb when dict over the size limit
+    def createGraph(self):
         totalTwitterCollectionSize = self.db.getTwitterCollectionSize()
         chunkCount = int(totalTwitterCollectionSize/chunkSize)
         start = 0
@@ -31,6 +37,7 @@ class CreateGraph:
                 if len(self.dict) > dictSize:
                     CreateGraph.insertDictIntoGraph(self)
                 wordList = self.keywordExtration.getKeyword(str(line))
+                # for each word in wordList, rest of the words in wordList will be its neighbor
                 for word in wordList:
                     for word2 in wordList:
                         if word != word2:
@@ -50,9 +57,7 @@ class CreateGraph:
             print(sys.getsizeof(self.dict))
 
 if __name__ == "__main__":
-    start_time = time.time()
-
+    start_time = time.time()    # calculate program running time
     graph = CreateGraph()
-    graph.getDataFromDatabase()
-
+    graph.createGraph()
     print("time elapsed: {:.2f}s".format(time.time() - start_time))

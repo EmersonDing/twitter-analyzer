@@ -7,18 +7,21 @@ from nltk.corpus import treebank
 
 class Keyword:
     def __init__(self):
-        self.stopWordList = set()          # stop word list
+        self.stopWordList = set()           # stop word list
         f = open('StopWord.txt', 'r')
         for line in f:
-            line = line[:-1]            # remove '\n'
+            line = line[:-1]                # remove '\n'
             self.stopWordList.add(line)
 
+    """
+    extract import word from sentence
+    """
     def getKeyword(self, sentence):
-        words = []
-        tokens = nltk.word_tokenize(sentence)
-        tagged = nltk.pos_tag(tokens)
+        words = []                              # create word list
+        tokens = nltk.word_tokenize(sentence)   # tokenize sentence with nltk package
+        tagged = nltk.pos_tag(tokens)           # get pos_tag for each word
 
-        # extract noun
+        ## extract noun. not in use
         # for tag in tagged:
         #     word = tag[0].lower()
         #     if "NN" in tag[1] and word not in self.stopWordList:
@@ -29,7 +32,7 @@ class Keyword:
         index = 0
         check = 0
         while(index < len(tagged)):
-            if "NN" in tagged[index][1]:
+            if "NN" in tagged[index][1]:            # extract word with "NN" in pos_tag
                 word += tagged[index][0].lower()
                 check = index
                 while index+1 < len(tagged) and "NN" in tagged[index+1][1]:
