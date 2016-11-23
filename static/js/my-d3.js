@@ -5,8 +5,9 @@ $("#keyword_network").on("click", function(){
     document.getElementById("streaming_tweets").style.backgroundColor = "lightslategrey";
     document.getElementById("keyword_network").style.backgroundColor = "darkblue";
     document.getElementById("streaming_tweets_div").style.display = "none";
-    document.getElementById("keyword_network_div").style.display = "none";
-    document.getElementById("keyword_search_div").style.display = "block";
+    // document.getElementById("keyword_network_div").style.display = "none";
+    // document.getElementById("keyword_search_div").style.display = "block";
+    document.getElementById("keyword_graph").style.display = "block";
 });
 
 function search_keyword() {
@@ -14,6 +15,8 @@ function search_keyword() {
     document.getElementById("keyword_network_div").style.display = "block";
     document.getElementById("keyword_search_div").style.display = "none";
     document.getElementById("return_to_search_btn").style.display = "block";
+    document.getElementById("d3_chart").style.display = "block";
+    document.getElementById("keyword_graph").style.display = "block";
 
     $.ajax({
         'url': get_canvas_data_url,
@@ -61,6 +64,8 @@ function search_keyword() {
                             document.getElementById("tweets").style.display = "block";
                             document.getElementById("d3_chart").style.display = "none";
                             document.getElementById("return_to_search_btn").style.display = "none";
+                            document.getElementById("tweets").style.display = "block";
+                            var APP_tweets = app(data);
                         }
                     });
                 });
@@ -82,12 +87,12 @@ function search_keyword() {
 
 function return_to_search() {
     document.getElementById("keyword_network_div").style.display = "none";
+    document.getElementById("keyword_graph").style.display = "block";
     document.getElementById("keyword_search_div").style.display = "block";
 }
 
 function return_to_canvas() {
     document.getElementById("tweets").style.display = "none";
-    document.getElementById("return_to_canvas_btn").style.display = "none";
     document.getElementById("d3_chart").style.display = "block";
     document.getElementById("return_to_search_btn").style.display = "block";
 }

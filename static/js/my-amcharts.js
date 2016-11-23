@@ -5,8 +5,9 @@ $("#streaming_tweets").on("click",function(){
     document.getElementById("streaming_tweets").style.backgroundColor = "darkblue";
     document.getElementById("keyword_network").style.backgroundColor = "lightslategrey";
     document.getElementById("streaming_tweets_div").style.display = "block";
-    document.getElementById("keyword_network_div").style.display = "none";
-    document.getElementById("keyword_search_div").style.display = "none";
+    document.getElementById("keyword_graph").style.display = "none";
+    // document.getElementById("keyword_network_div").style.display = "none";
+    // document.getElementById("keyword_search_div").style.display = "none";
 });
 
 

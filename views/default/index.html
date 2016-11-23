@@ -2,13 +2,16 @@
 <script src="{{=URL('static','js/bootstrap.min.js')}}"></script>
 <link rel="stylesheet" href="{{=URL('static','css/bootstrap.min.css')}}"/>
 <link rel="stylesheet" href="{{=URL('static','css/web2py-bootstrap3.css')}}"/>
-        <link rel="stylesheet" href="{{=URL('static','css/myapp.css')}}"/>
+<link rel="stylesheet" href="{{=URL('static','css/twitter_core.bundle.css')}}"/>
+<link rel="stylesheet" href="{{=URL('static','css/myapp.css')}}"/>
 <script src="{{=URL('static','js/amcharts.js')}}"></script>
 <script src="{{=URL('static','js/export.min.js')}}"></script>
 <script src="{{=URL('static','js/light.js')}}"></script>
 <script src="{{=URL('static','js/serial.js')}}"></script>
 <script src="{{=URL('static','js/pie.js')}}"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="{{=URL('static', 'js/vue.js')}}"></script>
+<script src="{{=URL('static', 'js/my-vue.js')}}"></script>
 
 <script src="{{=URL('static', 'js/load_charts.js')}}"></script>
 <script>
@@ -82,59 +85,95 @@
     </div>
 </div>
 <!-- Search Bar -->
-<div id="keyword_search_div" style="display: none;">
-    <div class="search-middle">
-        <div class="form-group" style="width: 300px;">
-            <label>Key Word</label>
-            <input id="keyword_search_network" type="text" class="col-sm-3 form-control" id="exampleInputEmail1" placeholder="Search by name.">
+<div id="keyword_graph" style="display: none;">
+    <div id="keyword_search_div" style="display: block;">
+        <div class="search-middle">
+            <div class="form-group" style="width: 300px;">
+                <label>Key Word</label>
+                <input id="keyword_search_network" type="text" class="col-sm-3 form-control" id="exampleInputEmail1" placeholder="Search by name.">
+                <br>
+            </div>
             <br>
-        </div>
-        <br>
-        <div class="form-group" style="width: 300px;">
-            <label>Number of bubble</label>
-            <select class="form-control" id="number_of_bubble">
-              <option>No limit</option>
-              <option>20</option>
-              <option>30</option>
-              <option>50</option>
-            </select>
-        </div>
-        <div class="form-group" style="width: 300px;">
-            <label>Number of bubble</label>
-            <select class="form-control" id="frequency_of_bubble">
-              <option>No limit</option>
-              <option>5</option>
-              <option>10</option>
-              <option>20</option>
-            </select>
-        </div>
-        </br>
-        <button class="btn btn-primary" onclick="search_keyword()">
-            Search
-        </button>
-    </div>
-</div>
-</div>
-<div id="keyword_network_div" style="display: none;">
-    <div id="return_to_search_btn" class="col-md-1">
-        <button onclick="return_to_search()" class="btn btn-primary">
-            <i class="fa fa-mail-reply"></i>&nbsp;Return
-        </button>
-    </div>
-    <div id="d3_chart" class="col-md-11"></div>
-    <div id="tweets" style="display: none;">
-        <div class="col-md-1">
-            <button id="return_to_canvas_btn" onclick="return_to_canvas()" class="btn btn-primary">
-                Return
+            <div class="form-group" style="width: 300px;">
+                <label>Number of bubble</label>
+                <select class="form-control" id="number_of_bubble">
+                  <option>No limit</option>
+                  <option>20</option>
+                  <option>30</option>
+                  <option>50</option>
+                </select>
+            </div>
+            <div class="form-group" style="width: 300px;">
+                <label>Number of bubble</label>
+                <select class="form-control" id="frequency_of_bubble">
+                  <option>No limit</option>
+                  <option>5</option>
+                  <option>10</option>
+                  <option>20</option>
+                </select>
+            </div>
+            </br>
+            <button class="btn btn-primary" onclick="search_keyword()">
+                Search
             </button>
         </div>
-        <div class="col-md-11">
-            <h1>sfsdffdfdf</h1>
-            <h1>sfsdffdfdf</h1>
-            <h1>sfsdffdfdf</h1>
-            <h1>sfsdffdfdf</h1>
-        </div>
+    </div>
 
+    <div id="keyword_network_div" style="display: none;">
+        <div id="return_to_search_btn" class="col-md-1">
+            <button onclick="return_to_search()" class="btn btn-primary">
+                <i class="fa fa-mail-reply"></i>&nbsp;Return
+            </button>
+        </div>
+        <div id="d3_chart" class="col-md-11"></div>
+        <div id="tweets" style="display: none;">
+            <div class="col-md-1">
+                <button id="return_to_canvas_btn" onclick="return_to_canvas()" class="btn btn-primary" style="display: block">
+                    Return
+                </button>
+            </div>
+            <div class="col-md-8">
+                <div id="vue-div">
+                    <div class="content-main top-timeline-tweetbox" role="main">
+                        <div class="stream-container conversations-enabled ">
+                            <div class="stream">
+                                <ol class="stream-items js-navigable-stream">
+                                    <div v-for="tweet in tweets_list">
+                                        <li class="js-stream-item stream-item stream-item">
+                                            <div class="tweet js-stream-tweet js-actionable-tweet js-profile-popup-actionable original-tweet js-original-tweet has-cards cards-forward">
+                                            <div class="content">
+                                                <div class="stream-item-header">
+                                                    <a class="account-group js-account-group js-action-profile js-user-profile-link js-nav">
+                                                        <img class="avatar js-action-profile-avatar" src="https://pbs.twimg.com/profile_images/784405499907338240/dy4uhXa7_bigger.jpg">
+                                                        <strong class="fullname js-action-profile-name show-popup-with-id">${tweet.full_name}</strong>
+                                                        <span class="username js-action-profile-name">
+                                                            <s>@</s>
+                                                            <b>${tweet.screen_name}</b>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                                <div class="js-tweet-text-container">
+                                                    <p class="TweetTextSize  js-tweet-text tweet-text">
+                                                        ${tweet.text}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="stream-item-footer">
+                                                <div class="ProfileTweet-actionList js-actions" role="group">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </li>
+                                    </div>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 </body>

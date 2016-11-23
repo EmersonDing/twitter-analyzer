@@ -198,5 +198,18 @@ def get_canvas_data():
 
 def get_tweets_info():
     keyword = request.vars.keyword
-    print 'The keyword is : ' + keyword
-    return response.json('sfssdfsdf')
+    print 'The keyword is : ' + str(keyword)
+    tweets_list = []
+    for x in range(0, 30):
+        tweets_list.append({
+            'full_name': 'Toni Barlettano',
+            'screen_name': 'itsmetonib',
+            'location': 'Greater NYC Area',
+            'created_at': 'Mon Jan 20 2014',
+            'text': 'Yaayyy I learned some JavaScript today! #thatwasntsohard ' +
+                    '#yesitwas #stoptalkingtoyourself #hashbrown #hashtag',
+            'favorited': 0,
+            'retweeted': 0,
+            'img_url': 'https://pbs.twimg.com/profile_images/784405499907338240/dy4uhXa7_bigger.jpg'
+        })
+    return response.json(tweets_list)
