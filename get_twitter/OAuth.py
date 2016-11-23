@@ -32,8 +32,8 @@ class MyStreamListener(tweepy.streaming.StreamListener):
 # get archived data from twitter stream. currently in use
 def getTwitterArchivedData():
     myStreamListener = MyStreamListener()
-    myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
-    myStream.filter(track=['Donald Trump'], async=True)             # extract twitter with "Donald Trump" in the content
+    myStreamjliu122@ucsc.edu = tweepy.Stream(auth=api.auth, listener=myStreamListener)
+    myStream.filter(track=['is'], async=True)             # extract twitter with "Donald Trump" in the content
 
 # get live data from twitter stream. currently not using cause the daily limit (280 rows/15 minutes)
 def getTwitterStreamData():
