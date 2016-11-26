@@ -1,15 +1,14 @@
 /**
 * Created by liuju on 11/21/2016.
 */
+
+// Go to Streaming Tweets function.
 $("#streaming_tweets").on("click",function(){
     document.getElementById("streaming_tweets").style.backgroundColor = "darkblue";
     document.getElementById("keyword_network").style.backgroundColor = "lightslategrey";
     document.getElementById("streaming_tweets_div").style.display = "block";
     document.getElementById("keyword_graph").style.display = "none";
-    // document.getElementById("keyword_network_div").style.display = "none";
-    // document.getElementById("keyword_search_div").style.display = "none";
 });
-
 
 var chart = null;
 var is_completed = false;
@@ -17,16 +16,15 @@ var timer_id = 0;
 
 function cancel_chart() {
     console.log('cancel-chart');
+    // cancel the tweepy streamlistener.
     $.post(cancel_chart_data_url);
 }
-
 
 function get_chart() {
     document.getElementById("btn_waiting").style.display = "block";
     document.getElementById("btn_completed").style.display = "none";
 
     var search_text = $("#search").val();
-    console.log("The search text is " + search_text);
     var type_of_analysis = $("#type_of_analysis").val();
     var number_of_item = $("#number_of_item").val();
     var number_of_tweet = $("#number_of_tweet").val();
@@ -69,8 +67,7 @@ function get_chart() {
 
     } );
 
-    console.log('get_chart_data');
-    console.log(search_text);
+    // streaming the tweets data.
     $.ajax({
         'url': get_chart_data_url,
         'type': 'post',
@@ -82,17 +79,18 @@ function get_chart() {
         },
         'dataType': 'json',
         'success': function(data) {
-            console.log(data);
             chart.dataProvider = data;
             chart.validateData();
-            console.log('Success.');
             is_completed = true;
+            // stop the continuous ajax call when the entire data is received.
             clearInterval(timer_id);
             document.getElementById("btn_waiting").style.display = "none";
             document.getElementById("btn_completed").style.display = "block";
         }
     });
 
+    // initiate the continuous ajax call to update the chart in every two seconds,
+    // so the chart will be lively updated.
     timer_id = setInterval(function() {
         if (!is_completed) {
             // Ajax call to get chart data from server.
@@ -106,12 +104,10 @@ function get_chart() {
                 },
                 'dataType': 'json',
                 'success': function (data) {
-                    console.log(data);
                     chart.dataProvider = data;
                     chart.validateData();
-                    console.log('Success.');
                 }
             });
         }
-    }, 2000);
+    }, 2000); // the default interval is 2000 ms.
 }
