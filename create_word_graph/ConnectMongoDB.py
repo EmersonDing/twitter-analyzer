@@ -4,8 +4,6 @@ This file connect with local MongoDB. define database execution related function
 
 from pymongo import MongoClient
 
-neighbor_size = 50  # define the maximum number of neighbor of a keyword
-
 class Database:
     def __init__(self):
         try:
@@ -44,12 +42,13 @@ class Database:
         return post_id
 
     # return neighbor of keyword
-    def getNeighbor(self, keyword):
+    def getNeighbor(self, keyword, neighbor_size, frequency_limit):
         set = self.db.keyword_graph.find({"keyword": keyword}, {"neighbors": 1})
         list = []
         for neighbors in set:
             for line in neighbors['neighbors']:
-                list.append((line['count'], line['keyword']))
+                if line['count'] >= frequency_limit:
+                    list.append((line['count'], line['keyword']))
         list.sort(reverse=True)        # sort by the weight of neighbor
         list = list[:neighbor_size]    # select top * words
         return list
@@ -57,7 +56,7 @@ class Database:
 if __name__ == "__main__":
     db = Database()
 
-    neighbor = db.getNeighbor('python')
+    neighbor = db.getNeighbor('donald trump', 50, 100)
     for line in neighbor:
         print(str(line[0]) + ' ' + line[1])
 
