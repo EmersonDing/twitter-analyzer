@@ -53,12 +53,19 @@ class Database:
         list = list[:neighbor_size]    # select top * words
         return list
 
+    # return twitter
+    def getKeywordNeighborTwitter(self, keyword, neighbor):
+        return self.db.twitter_stream.find({"$and": [{"text": {"$regex": "/^Donald Trump/i"}}, {"text": {"$regex": "/^Hilary Clinton/i"}}]}, {"text":1}).count()
+
 if __name__ == "__main__":
     db = Database()
 
-    neighbor = db.getNeighbor('donald trump', 50, 100)
-    for line in neighbor:
-        print(str(line[0]) + ' ' + line[1])
+    # twitter = db.getKeywordNeighborTwitter("","")
+    # print(twitter)
+
+    # neighbor = db.getNeighbor('donald trump', 100, 0)
+    # for line in neighbor:
+    #     print(str(line[0]) + ' ' + line[1])
 
     # for line in db.getTwitterText("twitter_stream", 0, 1000):
     #     print(line)
