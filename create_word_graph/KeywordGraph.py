@@ -2,10 +2,10 @@
 create keyword graph based on twitters
 """
 
+import sys
 import time
 from create_word_graph.ConnectMongoDB import *
 from create_word_graph.KeywordExtraction import *
-import sys
 
 chunkSize = 10000       # number of rows of twitter read from database each time
 dictSize = 20000        # maxinum size of dict that saves keyword

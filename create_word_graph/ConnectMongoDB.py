@@ -57,7 +57,7 @@ class Database:
 if __name__ == "__main__":
     db = Database()
 
-    neighbor = db.getNeighbor('donald trump')
+    neighbor = db.getNeighbor('python')
     for line in neighbor:
         print(str(line[0]) + ' ' + line[1])
 
